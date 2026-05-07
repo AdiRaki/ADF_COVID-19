@@ -19,6 +19,10 @@
 			"type": "string",
 			"defaultValue": "https://covid19reportingrrdl.dfs.core.windows.net/"
 		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/efb923e8-1d22-4326-97bc-e801319ddc99/resourceGroups/Covid-19_reporting/providers/Microsoft.Storage/storageAccounts/covid19reporting1"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -54,6 +58,9 @@
 					},
 					"ls_adls_covidreportingdl_properties_typeProperties_url": {
 						"value": "[parameters('ls_adls_covidreportingdl_properties_typeProperties_url')]"
+					},
+					"trigger1_properties_typeProperties_scope": {
+						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
 					}
 				}
 			},
