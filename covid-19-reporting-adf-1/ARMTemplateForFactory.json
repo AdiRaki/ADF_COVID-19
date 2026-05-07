@@ -19,7 +19,7 @@
 			"type": "string",
 			"defaultValue": "https://covid19reportingrrdl.dfs.core.windows.net/"
 		},
-		"trigger1_properties_typeProperties_scope": {
+		"tr_ingest_population_data_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/efb923e8-1d22-4326-97bc-e801319ddc99/resourceGroups/Covid-19_reporting/providers/Microsoft.Storage/storageAccounts/covid19reporting1"
 		}
@@ -306,7 +306,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"name": "[concat(parameters('factoryName'), '/tr_ingest_population_data')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -325,7 +325,7 @@
 				"typeProperties": {
 					"blobPathBeginsWith": "/population/blobs/population_by_age.tsv.gz",
 					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
+					"scope": "[parameters('tr_ingest_population_data_properties_typeProperties_scope')]",
 					"events": [
 						"Microsoft.Storage.BlobCreated"
 					]
