@@ -104,9 +104,34 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@equals(activity('Get Metadata1').output.columnCount,13)",
+								"value": "@equals(activity('Get Metadata1').output.columnCount,14)",
 								"type": "Expression"
 							},
+							"ifFalseActivities": [
+								{
+									"name": "Send Email",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "POST",
+										"headers": {},
+										"url": "https://prod-28.northcentralus.logic.azure.com:443/workflows/f72f2ae6939140c1bc61427630292d6a/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=0WlpCSD09ioJRwSOVwY5igOLi0cCi5OYW1UWnt0smmQ",
+										"body": {
+											"To": "ravi.kiran9010525728@gmail.com",
+											"Subject": "Pipeline @{pipeline().Pipeline} Status: @{pipeline().RunId}",
+											"Body": "Pipeline failed"
+										}
+									}
+								}
+							],
 							"ifTrueActivities": [
 								{
 									"name": "copy Population Data",
