@@ -1,0 +1,66 @@
+{
+	"name": "df_transform_cases_deaths",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "df_raw_cases_and_deaths",
+						"type": "DatasetReference"
+					},
+					"name": "CasesandDeathsSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "df_europe_case_and_death",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterEuropeOnly"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          country as string,",
+				"          country_code as string,",
+				"          continent as string,",
+				"          population as string,",
+				"          indicator as string,",
+				"          daily_count as string,",
+				"          date as string,",
+				"          rate_14_day as string,",
+				"          source as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CasesandDeathsSource",
+				"CasesandDeathsSource filter(continent == 'Europe' && not(isNull(country_code))) ~> FilterEuropeOnly",
+				"FilterEuropeOnly sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          country as string,",
+				"          country_code as string,",
+				"          continent as string,",
+				"          population as string,",
+				"          indicator as string,",
+				"          daily_count as string,",
+				"          date as string,",
+				"          rate_14_day as string,",
+				"          source as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
