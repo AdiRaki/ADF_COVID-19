@@ -24,6 +24,9 @@
 			"transformations": [
 				{
 					"name": "FilterEuropeOnly"
+				},
+				{
+					"name": "selectOnlyRequiredFields"
 				}
 			],
 			"scriptLines": [
@@ -42,7 +45,19 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> CasesandDeathsSource",
 				"CasesandDeathsSource filter(continent == 'Europe' && not(isNull(country_code))) ~> FilterEuropeOnly",
-				"FilterEuropeOnly sink(allowSchemaDrift: true,",
+				"FilterEuropeOnly select(mapColumn(",
+				"          country,",
+				"          country_code,",
+				"          population,",
+				"          indicator,",
+				"          daily_count,",
+				"          source,",
+				"          each(match(name == 'date'),",
+				"               'reported' + '_date' = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectOnlyRequiredFields",
+				"selectOnlyRequiredFields sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          country as string,",
