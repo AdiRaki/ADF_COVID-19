@@ -27,6 +27,9 @@
 				},
 				{
 					"name": "selectOnlyRequiredFields"
+				},
+				{
+					"name": "pivot1"
 				}
 			],
 			"scriptLines": [
@@ -52,12 +55,21 @@
 				"          indicator,",
 				"          daily_count,",
 				"          source,",
-				"          each(match(name == 'date'),",
-				"               'reported' + '_date' = $$)",
+				"          each(match(name=='date'),",
+				"               'reported'+'_date' = $$)",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectOnlyRequiredFields",
-				"selectOnlyRequiredFields sink(allowSchemaDrift: true,",
+				"selectOnlyRequiredFields pivot(groupBy(country,",
+				"          country_code,",
+				"          population,",
+				"          indicator,",
+				"          daily_count,",
+				"          source,",
+				"          reported_date),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> pivot1",
+				"pivot1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          country as string,",
