@@ -54,6 +54,15 @@
 				},
 				{
 					"name": "aggDimDate"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "pivotweekly"
+				},
+				{
+					"name": "pivotdaily"
 				}
 			],
 			"scriptLines": [
@@ -130,7 +139,32 @@
 				"deriveECDCYearWeek aggregate(groupBy(ecdc_year_week),",
 				"     week_start_date = min(date),",
 				"          week_end_date = max(date)) ~> aggDimDate",
-				"SplitDailyFromWeekly@Weekly sink(allowSchemaDrift: true,",
+				"SplitDailyFromWeekly@Weekly, aggDimDate join(reported_year_week == ecdc_year_week,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 pivot(groupBy(country,",
+				"          country_code_2_digit,",
+				"          country_code_3_digit,",
+				"          population,",
+				"          reported_year_week,",
+				"          source),",
+				"     pivotBy(indicator, ['Weekly new hospital admissions per 100k', 'Weekly new ICU admissions per 100k']),",
+				"     count = sum(value),",
+				"     columnNaming: '$V_$N',",
+				"     lateral: true) ~> pivotweekly",
+				"SplitDailyFromWeekly@Daily pivot(groupBy(country,",
+				"          country_code_2_digit,",
+				"          country_code_3_digit,",
+				"          population,",
+				"          reported_date,",
+				"          source),",
+				"     pivotBy(indicator, ['Daily Hospital Occupancy', 'Daily ICU Occupancy']),",
+				"     count = sum(value),",
+				"     columnNaming: '$V_$N',",
+				"     lateral: true) ~> pivotdaily",
+				"pivotweekly sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
