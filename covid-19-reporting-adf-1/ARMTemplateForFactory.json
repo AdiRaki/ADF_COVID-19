@@ -1132,6 +1132,12 @@
 						},
 						{
 							"name": "pivotdaily"
+						},
+						{
+							"name": "sortweekly"
+						},
+						{
+							"name": "sortdaily"
 						}
 					],
 					"scriptLines": [
@@ -1233,7 +1239,11 @@
 						"     count = sum(value),",
 						"     columnNaming: '$V_$N',",
 						"     lateral: true) ~> pivotdaily",
-						"pivotweekly sink(allowSchemaDrift: true,",
+						"pivotweekly sort(desc(reported_year_week, true),",
+						"     asc(country, true)) ~> sortweekly",
+						"pivotdaily sort(asc(country, true),",
+						"     desc(reported_date, true)) ~> sortdaily",
+						"sortweekly sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
 						"     preCommands: [],",
